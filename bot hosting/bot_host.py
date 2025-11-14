@@ -32,7 +32,7 @@ class BotHost:
     
     def start_bot(self, update, context):
         """Start command handler"""
-        chat_id = update.effective_message.id
+        chat_id = update.effective_chat.id
         welcome_message = (
             "Welcome to the Bot Hosting Service!\n\n"
             "Send me a .py or .zip file containing your bot code.\n"
@@ -46,7 +46,7 @@ class BotHost:
     
     def list_bots(self, update, context):
         """List all bots hosted by the user"""
-        chat_id = update.effective_message.id
+        chat_id = update.effective_chat.id
         user_bots = [bot_id for bot_id, bot_info in active_bots.items() if bot_info['owner'] == chat_id]
         
         if not user_bots:
@@ -63,7 +63,7 @@ class BotHost:
     
     def stop_bot(self, update, context):
         """Stop a hosted bot"""
-        chat_id = update.effective_message.id
+        chat_id = update.effective_chat.id
         try:
             bot_id = context.args[0]
         except IndexError:
@@ -88,7 +88,7 @@ class BotHost:
     
     def handle_document(self, update, context):
         """Handle incoming documents (py/zip files)"""
-        chat_id = update.effective_message.id
+        chat_id = update.effective_chat.id
         document = update.message.document
         
         # Check file extension
@@ -157,7 +157,7 @@ class BotHost:
             
             # Start the bot in a separate process
             process = subprocess.Popen([
-                "python", bot_file
+                "python", os.path.basename(bot_file)
             ], cwd=bot_dir)
             
             # Store bot information
